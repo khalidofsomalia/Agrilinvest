@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import FarmCard from "@/components/farm-card";
 import { Reveal } from "@/components/reveal";
 import { AnimatedCounter } from "@/components/animated-counter";
+import { FarmShowcase3D } from "@/components/farm-showcase-3d";
 import { prisma } from "@/lib/prisma";
 import {
   ArrowRight,
@@ -345,6 +346,19 @@ export default async function HomePage() {
               </Link>
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Interactive 3D Showcase */}
+      <section className="py-24 md:py-32 bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-600/20 rounded-full blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/15 rounded-full blur-[150px]" />
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <FarmShowcase3D />
+          </Reveal>
         </div>
       </section>
 
