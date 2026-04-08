@@ -18,6 +18,7 @@ import {
   Shield,
   BarChart3,
   Check,
+  Sprout,
 } from "lucide-react";
 
 interface UserProfile {
@@ -82,12 +83,10 @@ export default function ProfilePage() {
   if (status === "loading" || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4" />
-            <div className="h-48 bg-gray-200 rounded-xl" />
-            <div className="h-48 bg-gray-200 rounded-xl" />
-          </div>
+        <div className="h-48 skeleton" />
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
+          <div className="h-64 bg-white rounded-2xl skeleton shadow-sm mb-6" />
+          <div className="h-48 bg-white rounded-2xl skeleton shadow-sm" />
         </div>
       </div>
     );
@@ -97,109 +96,145 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Profile</h1>
+      {/* Header Banner */}
+      <div className="relative h-48 bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-600 overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        </div>
+      </div>
 
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-10 pb-12">
         {/* Profile Header */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-emerald-700">
+        <Card className="mb-6 border-0 shadow-lg rounded-2xl overflow-hidden">
+          <CardContent className="p-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+              <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200 shrink-0">
+                <span className="text-3xl font-bold text-white">
                   {profile.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">
+              <div className="text-center sm:text-left">
+                <h2 className="text-2xl font-bold text-gray-900">
                   {profile.name}
                 </h2>
-                <p className="text-sm text-gray-500">{profile.email}</p>
-                <Badge className="mt-1">
-                  {profile.role === "INVESTOR" ? "Investor" : "Farmer"}
-                </Badge>
+                <p className="text-sm text-gray-500 mt-0.5">{profile.email}</p>
+                <div className="flex items-center gap-2 mt-3 justify-center sm:justify-start">
+                  <Badge className="rounded-lg px-3 py-1">
+                    <Sprout className="w-3 h-3 mr-1" />
+                    {profile.role === "INVESTOR" ? "Investor" : "Farmer"}
+                  </Badge>
+                  <Badge variant="outline" className="rounded-lg px-3 py-1">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Verified
+                  </Badge>
+                </div>
               </div>
             </div>
 
             <Separator className="my-6" />
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-gray-50 rounded-xl">
-                <Wallet className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">
-                  {formatCurrency(profile.balance)}
-                </p>
-                <p className="text-xs text-gray-500">Balance</p>
-              </div>
-              <div className="text-center p-3 bg-gray-50 rounded-xl">
-                <BarChart3 className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">
-                  {profile._count.investments}
-                </p>
-                <p className="text-xs text-gray-500">Investments</p>
-              </div>
-              <div className="text-center p-3 bg-gray-50 rounded-xl">
-                <Shield className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">
-                  {profile._count.transactions}
-                </p>
-                <p className="text-xs text-gray-500">Transactions</p>
-              </div>
-              <div className="text-center p-3 bg-gray-50 rounded-xl">
-                <Calendar className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">
-                  {new Date(profile.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-                <p className="text-xs text-gray-500">Joined</p>
-              </div>
+              {[
+                {
+                  icon: Wallet,
+                  value: formatCurrency(profile.balance),
+                  label: "Balance",
+                  color: "from-emerald-50 to-teal-50",
+                  iconColor: "text-emerald-600",
+                },
+                {
+                  icon: BarChart3,
+                  value: profile._count.investments.toString(),
+                  label: "Investments",
+                  color: "from-blue-50 to-indigo-50",
+                  iconColor: "text-blue-600",
+                },
+                {
+                  icon: Shield,
+                  value: profile._count.transactions.toString(),
+                  label: "Transactions",
+                  color: "from-violet-50 to-purple-50",
+                  iconColor: "text-violet-600",
+                },
+                {
+                  icon: Calendar,
+                  value: new Date(profile.createdAt).toLocaleDateString(
+                    "en-US",
+                    { month: "short", year: "numeric" }
+                  ),
+                  label: "Joined",
+                  color: "from-amber-50 to-orange-50",
+                  iconColor: "text-amber-600",
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className={`bg-gradient-to-br ${stat.color} rounded-xl p-4 text-center`}
+                >
+                  <stat.icon
+                    className={`w-5 h-5 ${stat.iconColor} mx-auto mb-2`}
+                  />
+                  <p className="text-lg font-bold text-gray-900">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
         {/* Edit Profile */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Edit Profile</CardTitle>
+        <Card className="border-0 shadow-sm rounded-2xl">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg font-bold">Edit Profile</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-6 space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-sm font-semibold">
+                Full Name
+              </Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="pl-10"
+                  className="pl-11 h-12 rounded-xl bg-gray-50 border-gray-200"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm font-semibold">
+                Email
+              </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   id="email"
                   value={profile.email}
                   disabled
-                  className="pl-10 bg-gray-50"
+                  className="pl-11 h-12 rounded-xl bg-gray-100 border-gray-200 text-gray-500"
                 />
               </div>
-              <p className="text-xs text-gray-400">
-                Email cannot be changed
-              </p>
+              <p className="text-xs text-gray-400">Email cannot be changed</p>
             </div>
 
             <div className="flex items-center gap-3 pt-2">
-              <Button onClick={handleSave} disabled={saving || name === profile.name}>
+              <Button
+                onClick={handleSave}
+                disabled={saving || name === profile.name}
+                className="rounded-xl h-11 px-6"
+              >
                 {saving ? "Saving..." : "Save Changes"}
               </Button>
               {saved && (
-                <span className="flex items-center gap-1 text-sm text-emerald-600">
-                  <Check className="w-4 h-4" />
+                <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-semibold">
+                  <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <Check className="w-3 h-3" />
+                  </div>
                   Saved successfully
                 </span>
               )}
