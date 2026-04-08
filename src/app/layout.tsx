@@ -3,6 +3,8 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import SessionProvider from "@/components/session-provider";
+import { ScrollProgressBar } from "@/components/scroll-progress-bar";
+import { BackToTop } from "@/components/back-to-top";
 
 export const metadata: Metadata = {
   title: "Investoir - Invest in Farmland, Grow Your Wealth",
@@ -19,9 +21,11 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col antialiased">
         <SessionProvider>
+          <ScrollProgressBar />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <BackToTop />
         </SessionProvider>
       </body>
     </html>

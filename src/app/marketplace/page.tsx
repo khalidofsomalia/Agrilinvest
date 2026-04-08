@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import FarmCard from "@/components/farm-card";
+import { Reveal } from "@/components/reveal";
 import { Search, SlidersHorizontal, X, Sprout, TrendingUp, MapPin } from "lucide-react";
 
 interface Farm {
@@ -317,13 +318,9 @@ export default function MarketplacePage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {farms.map((farm, index) => (
-                <div
-                  key={farm.id}
-                  className="opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.08}s` }}
-                >
+                <Reveal key={farm.id} delay={index * 60}>
                   <FarmCard {...farm} />
-                </div>
+                </Reveal>
               ))}
             </div>
           </>

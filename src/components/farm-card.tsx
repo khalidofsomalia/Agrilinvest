@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRef } from "react";
 import { MapPin, TrendingUp, Sprout, ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -70,9 +73,38 @@ export default function FarmCard({
   const gradient =
     cropGradients[cropType] || "from-emerald-400 via-emerald-500 to-emerald-700";
 
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const dx = e.clientX - rect.left - cx;
+    const dy = e.clientY - rect.top - cy;
+    // Tilt range ±6deg, inverted on Y for natural feel
+    const tiltY = (dx / cx) * 6;
+    const tiltX = -(dy / cy) * 6;
+    el.style.setProperty("--tilt-x", `${tiltX}deg`);
+    el.style.setProperty("--tilt-y", `${tiltY}deg`);
+  };
+
+  const handleMouseLeave = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.setProperty("--tilt-x", "0deg");
+    el.style.setProperty("--tilt-y", "0deg");
+  };
+
   return (
-    <Link href={`/farms/${id}`}>
-      <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 cursor-pointer rounded-2xl bg-white">
+    <Link href={`/farms/${id}`} className="block tilt-card">
+      <Card
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="tilt-card-inner group overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer rounded-2xl bg-white"
+      >
         {/* Image placeholder with dynamic gradient */}
         <div
           className={`relative h-52 bg-gradient-to-br ${gradient} overflow-hidden`}

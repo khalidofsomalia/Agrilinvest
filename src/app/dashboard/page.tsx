@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import StatsCard from "@/components/stats-card";
+import { Reveal } from "@/components/reveal";
+import { AnimatedCounter } from "@/components/animated-counter";
 import { formatCurrency } from "@/lib/utils";
 import {
   Wallet,
@@ -169,35 +171,44 @@ export default function DashboardPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatsCard
-            title="Account Balance"
-            value={formatCurrency(data.balance)}
-            icon={Wallet}
-            subtitle="Available to invest"
-          />
-          <StatsCard
-            title="Total Invested"
-            value={formatCurrency(data.totalInvested)}
-            icon={PiggyBank}
-            trend={{ value: 12.5, positive: true }}
-          />
-          <StatsCard
-            title="Total Returns"
-            value={formatCurrency(data.totalReturns)}
-            icon={TrendingUp}
-            trend={{ value: 8.3, positive: true }}
-          />
-          <StatsCard
-            title="Active Investments"
-            value={data.activeInvestments.toString()}
-            icon={BarChart3}
-            subtitle={`${data.investments.length} total`}
-          />
+          <Reveal delay={0}>
+            <StatsCard
+              title="Account Balance"
+              value={<AnimatedCounter value={data.balance} format="currency" />}
+              icon={Wallet}
+              subtitle="Available to invest"
+            />
+          </Reveal>
+          <Reveal delay={80}>
+            <StatsCard
+              title="Total Invested"
+              value={<AnimatedCounter value={data.totalInvested} format="currency" />}
+              icon={PiggyBank}
+              trend={{ value: 12.5, positive: true }}
+            />
+          </Reveal>
+          <Reveal delay={160}>
+            <StatsCard
+              title="Total Returns"
+              value={<AnimatedCounter value={data.totalReturns} format="currency" />}
+              icon={TrendingUp}
+              trend={{ value: 8.3, positive: true }}
+            />
+          </Reveal>
+          <Reveal delay={240}>
+            <StatsCard
+              title="Active Investments"
+              value={<AnimatedCounter value={data.activeInvestments} />}
+              icon={BarChart3}
+              subtitle={`${data.investments.length} total`}
+            />
+          </Reveal>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 mb-8">
           {/* Portfolio Chart */}
-          <Card className="lg:col-span-2 border-0 shadow-sm rounded-2xl">
+          <Reveal className="lg:col-span-2">
+          <Card className="border-0 shadow-sm rounded-2xl">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-bold">Portfolio Performance</CardTitle>
@@ -275,8 +286,10 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
+          </Reveal>
 
           {/* Distribution */}
+          <Reveal delay={150}>
           <Card className="border-0 shadow-sm rounded-2xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-bold">Crop Distribution</CardTitle>
@@ -353,10 +366,12 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+          </Reveal>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Investments */}
+          <Reveal>
           <Card className="border-0 shadow-sm rounded-2xl">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-bold">Active Investments</CardTitle>
@@ -419,8 +434,10 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+          </Reveal>
 
           {/* Recent Transactions */}
+          <Reveal delay={150}>
           <Card className="border-0 shadow-sm rounded-2xl">
             <CardHeader>
               <CardTitle className="text-lg font-bold">Recent Transactions</CardTitle>
@@ -483,6 +500,7 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+          </Reveal>
         </div>
       </div>
     </div>

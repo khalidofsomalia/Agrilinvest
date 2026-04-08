@@ -1,10 +1,11 @@
+import { ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { LucideIcon, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 interface StatsCardProps {
   title: string;
-  value: string;
+  value: ReactNode;
   subtitle?: string;
   icon: LucideIcon;
   trend?: {

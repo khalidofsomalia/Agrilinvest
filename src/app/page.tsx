@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import FarmCard from "@/components/farm-card";
+import { Reveal } from "@/components/reveal";
+import { AnimatedCounter } from "@/components/animated-counter";
 import { prisma } from "@/lib/prisma";
 import {
   ArrowRight,
@@ -181,37 +183,48 @@ export default async function HomePage() {
           </div>
 
           {/* Bottom stats strip */}
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in-up stagger-5">
+          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               {
                 label: "Total Invested",
-                value: `$${Math.round(stats.totalInvested / 1000)}K+`,
+                node: (
+                  <AnimatedCounter
+                    value={stats.totalInvested}
+                    format="compact"
+                    prefix="$"
+                  />
+                ),
                 icon: Wallet,
               },
               {
                 label: "Active Farms",
-                value: `${stats.farms}`,
+                node: <AnimatedCounter value={stats.farms} />,
                 icon: Landmark,
               },
               {
                 label: "Investments Made",
-                value: `${stats.investments}+`,
+                node: (
+                  <AnimatedCounter value={stats.investments} suffix="+" />
+                ),
                 icon: BarChart3,
               },
-              { label: "Countries", value: "8+", icon: Globe },
+              {
+                label: "Countries",
+                node: <AnimatedCounter value={8} suffix="+" />,
+                icon: Globe,
+              },
             ].map((stat, i) => (
-              <div
-                key={stat.label}
-                className={`glass-dark rounded-2xl p-5 stagger-${i + 1} transition-all duration-300 hover:bg-white/15`}
-              >
-                <stat.icon className="w-5 h-5 text-emerald-400 mb-3" />
-                <p className="text-2xl font-bold text-white tracking-tight">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-emerald-200/50 mt-0.5">
-                  {stat.label}
-                </p>
-              </div>
+              <Reveal key={stat.label} delay={i * 100}>
+                <div className="glass-dark rounded-2xl p-5 transition-all duration-300 hover:bg-white/15">
+                  <stat.icon className="w-5 h-5 text-emerald-400 mb-3" />
+                  <p className="text-2xl font-bold text-white tracking-tight">
+                    {stat.node}
+                  </p>
+                  <p className="text-sm text-emerald-200/50 mt-0.5">
+                    {stat.label}
+                  </p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -263,28 +276,30 @@ export default async function HomePage() {
                   "Track your portfolio as crops grow. Receive returns from harvests and watch your agricultural investments flourish.",
                 color: "from-emerald-600 to-green-600",
               },
-            ].map((item) => (
-              <div key={item.step} className="relative group">
-                <Card className="overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-500 card-hover bg-white">
-                  <CardContent className="p-8 text-center">
-                    {/* Step circle */}
-                    <div
-                      className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <item.icon className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="text-xs font-bold text-emerald-600 tracking-widest uppercase mb-3">
-                      Step {item.step}
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-500 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+            ].map((item, i) => (
+              <Reveal key={item.step} delay={i * 120}>
+                <div className="relative group">
+                  <Card className="overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-500 card-hover bg-white">
+                    <CardContent className="p-8 text-center">
+                      {/* Step circle */}
+                      <div
+                        className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <item.icon className="w-7 h-7 text-white" />
+                      </div>
+                      <div className="text-xs font-bold text-emerald-600 tracking-widest uppercase mb-3">
+                        Step {item.step}
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-500 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -315,8 +330,10 @@ export default async function HomePage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {farms.map((farm) => (
-              <FarmCard key={farm.id} {...farm} />
+            {farms.map((farm, i) => (
+              <Reveal key={farm.id} delay={i * 80}>
+                <FarmCard {...farm} />
+              </Reveal>
             ))}
           </div>
 
@@ -373,21 +390,20 @@ export default async function HomePage() {
                 description:
                   "Invest in farms across multiple countries and diversify across different crops.",
               },
-            ].map((feature) => (
-              <div
-                key={feature.title}
-                className="glass-dark rounded-2xl p-8 text-center transition-all duration-300 hover:bg-white/15"
-              >
-                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:bg-white/20 transition-colors">
-                  <feature.icon className="w-7 h-7 text-emerald-300" />
+            ].map((feature, i) => (
+              <Reveal key={feature.title} delay={i * 100}>
+                <div className="glass-dark rounded-2xl p-8 text-center transition-all duration-300 hover:bg-white/15 h-full">
+                  <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:bg-white/20 transition-colors">
+                    <feature.icon className="w-7 h-7 text-emerald-300" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-emerald-100/60 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-emerald-100/60 leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -429,42 +445,41 @@ export default async function HomePage() {
                 rating: 5,
                 text: "As someone new to agricultural investing, the interactive plot selection and clear ROI projections made me feel confident in my first investment.",
               },
-            ].map((testimonial) => (
-              <Card
-                key={testimonial.name}
-                className="border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 card-hover"
-              >
-                <CardContent className="p-8">
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-amber-400 text-amber-400"
-                      />
-                    ))}
-                  </div>
-                  <Quote className="w-8 h-8 text-emerald-200 mb-4" />
-                  <p className="text-gray-600 leading-relaxed mb-8">
-                    &ldquo;{testimonial.text}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-bold text-white">
-                        {testimonial.name.charAt(0)}
-                      </span>
+            ].map((testimonial, i) => (
+              <Reveal key={testimonial.name} delay={i * 120}>
+                <Card className="border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 card-hover h-full">
+                  <CardContent className="p-8">
+                    {/* Stars */}
+                    <div className="flex gap-1 mb-4">
+                      {Array.from({ length: testimonial.rating }).map((_, j) => (
+                        <Star
+                          key={j}
+                          className="w-4 h-4 fill-amber-400 text-amber-400"
+                        />
+                      ))}
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {testimonial.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {testimonial.role}
-                      </p>
+                    <Quote className="w-8 h-8 text-emerald-200 mb-4" />
+                    <p className="text-gray-600 leading-relaxed mb-8">
+                      &ldquo;{testimonial.text}&rdquo;
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-bold text-white">
+                          {testimonial.name.charAt(0)}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {testimonial.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {testimonial.role}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -474,7 +489,7 @@ export default async function HomePage() {
       <section id="about" className="py-24 md:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-20 items-center">
-            <div>
+            <Reveal direction="left">
               <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-2 rounded-full mb-6">
                 <Leaf className="w-4 h-4" />
                 Our Mission
@@ -497,21 +512,38 @@ export default async function HomePage() {
               </p>
               <div className="grid grid-cols-2 gap-8">
                 {[
-                  { value: `${stats.farms}+`, label: "Verified Farms" },
-                  { value: "8+", label: "Countries" },
-                  { value: "15%", label: "Avg. ROI" },
-                  { value: "100%", label: "Transparent" },
+                  {
+                    node: (
+                      <AnimatedCounter value={stats.farms} suffix="+" />
+                    ),
+                    label: "Verified Farms",
+                  },
+                  {
+                    node: <AnimatedCounter value={8} suffix="+" />,
+                    label: "Countries",
+                  },
+                  {
+                    node: <AnimatedCounter value={15} suffix="%" />,
+                    label: "Avg. ROI",
+                  },
+                  {
+                    node: <AnimatedCounter value={100} suffix="%" />,
+                    label: "Transparent",
+                  },
                 ].map((stat) => (
-                  <div key={stat.label} className="border-l-2 border-emerald-500 pl-4">
+                  <div
+                    key={stat.label}
+                    className="border-l-2 border-emerald-500 pl-4"
+                  >
                     <p className="text-3xl font-extrabold text-gray-900">
-                      {stat.value}
+                      {stat.node}
                     </p>
                     <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="relative">
+            </Reveal>
+            <Reveal direction="right" delay={150} className="relative">
               <div className="aspect-[4/5] bg-gradient-to-br from-emerald-50 via-emerald-100 to-teal-100 rounded-3xl flex items-center justify-center overflow-hidden">
                 {/* Decorative farm-themed elements */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
@@ -537,7 +569,7 @@ export default async function HomePage() {
               {/* Decorative elements */}
               <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-emerald-600 rounded-2xl -z-10 opacity-80" />
               <div className="absolute -top-4 -right-4 w-16 h-16 bg-teal-400 rounded-xl -z-10 opacity-60" />
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -547,7 +579,7 @@ export default async function HomePage() {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[150px]" />
         </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <Reveal className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-emerald-900/50 text-emerald-400 text-sm font-medium px-4 py-2 rounded-full mb-6">
             <Sparkles className="w-4 h-4" />
             Get Started Today
@@ -579,7 +611,7 @@ export default async function HomePage() {
               <Link href="/marketplace">Explore Marketplace</Link>
             </Button>
           </div>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

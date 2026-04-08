@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import PlotGrid from "@/components/plot-grid";
+import FarmPlotView from "@/components/farm-plot-view";
 import InvestmentCalculator from "@/components/investment-calculator";
 import {
   MapPin,
@@ -378,9 +378,10 @@ export default function FarmDetailPage() {
                   plot costs {formatCurrency(farm.pricePerPlot)}.
                 </p>
                 {availablePlots > 0 ? (
-                  <PlotGrid
+                  <FarmPlotView
                     totalPlots={farm.totalPlots}
                     soldPlots={farm.soldPlots}
+                    pricePerPlot={farm.pricePerPlot}
                     onSelectionChange={handleSelectionChange}
                     maxSelect={Math.min(20, availablePlots)}
                   />
